@@ -24,3 +24,7 @@ with open("engine_report.pdf", "rb") as f:
     b64 = base64.b64encode(f.read()).decode()
     href = f'<a href="data:file/pdf;base64,{b64}" download="EngineReport.pdf">📄 Download Diagnostic Report</a>'
     st.markdown(href, unsafe_allow_html=True)
+import streamlit as st
+
+if st.secrets.get("password") and st.text_input("Password", type="password") != st.secrets["password"]:
+    st.stop()
