@@ -1,14 +1,15 @@
-import streamlit as st
-import pandas as pd
+from predict import predict_failure
 
-st.set_page_config(layout="wide")
-st.title("EngineMind – Real-Time Engine Telemetry")
+st.subheader("Failure Prediction")
 
-df = pd.read_csv("telemetry_simulated.csv")
+latest = df.iloc[-1][['rpm', 'temperature', 'pressure', 'vibration']].to_dict()
+prob = predict_failure(latest)
 
-st.subheader("Telemetry Time-Series")
-st.line_chart(df[['rpm', 'temperature', 'pressure', 'vibration']])
+st.metric("Failure Risk", f"{prob * 100:.1f} %")
 
-st.subheader("Failure Events")
-failures = df[df['failure'] == 1]
-st.write(failures if not failures.empty else "No failures detected.")
+if prob > 0.8:
+    st.error("⚠️ High Failure Risk! Immediate attention required.")
+elif prob > 0.5:
+    st.warning("⚠️ Moderate risk. Monitor closely.")
+else:
+    st.success(" Engine appears stable.")
