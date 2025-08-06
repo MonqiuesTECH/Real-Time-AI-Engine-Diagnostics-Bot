@@ -1,0 +1,11 @@
+import pandas as pd
+from sklearn.ensemble import RandomForestClassifier
+import joblib
+
+df = pd.read_csv("telemetry_simulated.csv")
+X = df[['rpm', 'temperature', 'pressure', 'vibration']]
+y = df['failure']
+
+model = RandomForestClassifier()
+model.fit(X, y)
+joblib.dump(model, "failure_model.pkl")
