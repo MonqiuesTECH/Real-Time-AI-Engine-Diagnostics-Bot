@@ -4,10 +4,20 @@ import pandas as pd
 st.set_page_config(layout="wide")
 st.title("EngineMind – Real-Time Engine Telemetry")
 
-df = pd.read_csv("telemetry_simulated.csv")
+import time
 
-st.subheader("Telemetry Time-Series")
-st.line_chart(df[['rpm', 'temperature', 'pressure', 'vibration']])
+st.subheader("Telemetry Time-Series (Live)")
+
+placeholder = st.empty()
+features = ['rpm', 'temperature', 'pressure', 'vibration']
+sim_df = pd.read_csv("telemetry_simulated.csv")
+
+for i in range(10, len(sim_df), 5):
+    window = sim_df.iloc[i-10:i]
+    with placeholder.container():
+        st.line_chart(window[features])
+        st.caption(f"Latest timestamp: {window.iloc[-1]['timestamp']}")
+    time.sleep(1)
 
 st.subheader("Failure Events")
 failures = df[df['failure'] == 1]
