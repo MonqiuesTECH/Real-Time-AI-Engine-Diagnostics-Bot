@@ -18,7 +18,7 @@ for i in range(10, len(sim_df), 5):
         st.line_chart(window[features])
         st.caption(f"Latest timestamp: {window.iloc[-1]['timestamp']}")
     time.sleep(1)
-
+df = sim_df
 st.subheader("Failure Events")
 failures = df[df['failure'] == 1]
 st.write(failures if not failures.empty else "No failures detected.")
