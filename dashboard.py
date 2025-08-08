@@ -29,7 +29,8 @@ step_size   = st.sidebar.slider("Step size (rows/frame)", 1, 20, 5, 1)
 inject_faults = st.sidebar.checkbox("Inject fault pattern (demo)")
 
 sim_df = pd.read_csv("telemetry_simulated.csv")
-
+play = st.sidebar.toggle("Play", value=True)
+reset = st.sidebar.button("Reset stream")
 if "stream_idx" not in st.session_state:
     st.session_state.stream_idx = window_size
 
