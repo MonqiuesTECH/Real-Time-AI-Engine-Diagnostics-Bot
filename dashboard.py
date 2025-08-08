@@ -94,7 +94,6 @@ prob = predict_failure(latest)
 st.metric("Failure Risk", f"{prob * 100:.1f} %")
 
 if prob > 0.8:
-if prob > 0.8:
     st.error("⚠ High Failure Risk! Immediate attention required.")
 elif prob > 0.5:
     st.warning("🟠 Moderate risk. Monitor closely.")
@@ -119,3 +118,4 @@ st.download_button(
     file_name=pdf_name,
     mime="application/pdf",
 )
+
