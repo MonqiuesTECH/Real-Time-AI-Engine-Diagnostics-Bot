@@ -4,7 +4,31 @@ import numpy as np
 import time
 
 st.set_page_config(layout="wide")
-st.title("EngineMind – Real-Time Engine Telemetry")
+st.title("ZARI – Real-Time Engine Telemetry")
+if "authed" not in st.session_state:
+    st.session_state.authed = False
+
+def login_gate():
+    if st.session_state.authed:
+    
+        with st.sidebar:
+            if st.button("Log out"):
+                st.session_state.authed = False
+                st.rerun()
+        return  
+
+    st.title("🔐 EngineMind Login")
+    user = st.text_input("Username")
+    pw   = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if user == st.secrets["auth"]["username"] and pw == st.secrets["auth"]["password"]:
+            st.session_state.authed = True
+            st.rerun()
+        else:
+            st.error("Invalid credentials")
+    st.stop() 
+
+login_gate()
 
 import time
 
