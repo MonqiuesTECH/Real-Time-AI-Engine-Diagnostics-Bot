@@ -94,14 +94,14 @@ prob = predict_failure(latest)
 st.metric("Failure Risk", f"{prob * 100:.1f} %")
 
 if prob > 0.8:
+
+if prob > 0.8:
     st.error("⚠️ High Failure Risk! Immediate attention required.")
 elif prob > 0.5:
-    st.warning("⚠️ Moderate risk. Monitor closely.")
+    st.warning("🟠 Moderate risk. Monitor closely.")
 else:
- from datetime import datetime
-from report_generator import generate_pdf
+    st.success("✅ Engine appears stable.")
 
-# --- Branded, timestamped PDF ---
 company = "EngineMind"
 footer  = "Powered by ZARI — Confidential"
 
@@ -111,7 +111,6 @@ report_data["Failure Probability"] = f"{prob*100:.1f}%"
 pdf_name = f"engine_report_{datetime.utcnow().strftime('%Y%m%d-%H%M%SZ')}.pdf"
 generate_pdf(report_data, pdf_name, company, footer)
 
-# Download button
 with open(pdf_name, "rb") as f:
     pdf_bytes = f.read()
 
@@ -121,7 +120,4 @@ st.download_button(
     file_name=pdf_name,
     mime="application/pdf",
 )
-import streamlit as st
 
-if st.secrets.get("password") and st.text_input("Password", type="password") != st.secrets["password"]:
-    st.stop()
