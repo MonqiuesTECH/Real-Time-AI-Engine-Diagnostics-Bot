@@ -18,14 +18,44 @@ for i in range(10, len(sim_df), 5):
         st.line_chart(window[features])
         st.caption(f"Latest timestamp: {window.iloc[-1]['timestamp']}")
     time.sleep(1)
+import time
+
+st.sidebar.header("Live Stream Controls")
+refresh_sec = st.sidebar.slider("Refresh rate (seconds)", 0.2, 2.0, 1.0, 0.1)
+window_size = st.sidebar.slider("Chart window (rows)", 20, 200, 60, 5)
+step_size   = st.sidebar.slider("Step size (rows/frame)", 1, 20, 5, 1)
+inject_faults = st.sidebar.checkbox("Inject fault pattern (demo)")
+
+sim_df = pd.read_csv("telemetry_simulated.csv")
+
+if "stream_idx" not in st.session_state:
+    st.session_state.stream_idx = window_size
+
+st.subheader("Telemetry Time-Series (Live)")
+placeholder = st.empty()
+
+st.session_state.stream_idx = min(
+    len(sim_df),
+    st.session_state.stream_idx + step_size
+)
+
+view_end = st.session_state.stream_idx
+view_start = max(0, view_end - window_size)
+window = sim_df.iloc[view_start:view_end].copy()
+
+if inject_faults and len(window) >= 10:
+    ramp = np.linspace(0, 12, len(window))
+    window["temperature"] = window["temperature"] + ramp
+    window["vibration"] = window["vibration"] + (ramp * 0.01)
+
+with placeholder.container():
+    st.line_chart(window[["rpm", "temperature", "pressure", "vibration"]])
+    st.caption(f"Latest timestamp: {window.iloc[-1]['timestamp']}  •  Rows: {view_end}/{len(sim_df)}")
+
+time.sleep(refresh_sec)
+st.rerun()
+
 df = sim_df
-st.subheader("Failure Events")
-failures = df[df['failure'] == 1]
-st.write(failures if not failures.empty else "No failures detected.")
-
-from predict import predict_failure
-
-st.subheader("Failure Prediction")
 
 latest = df.iloc[-1][['rpm', 'temperature', 'pressure', 'vibration']].to_dict()
 prob = predict_failure(latest)
