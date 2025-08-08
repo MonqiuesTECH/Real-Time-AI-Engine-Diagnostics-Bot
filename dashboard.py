@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import time
+from datetime import datetime
+import base64
+from report_generator import generate_pdf
+
 
 st.set_page_config(layout="wide")
 st.title("ZARI – Real-Time Engine Telemetry")
@@ -94,18 +98,29 @@ if prob > 0.8:
 elif prob > 0.5:
     st.warning("⚠️ Moderate risk. Monitor closely.")
 else:
-    st.success(" Engine appears stable.")
-import base64
+ from datetime import datetime
 from report_generator import generate_pdf
+
+# --- Branded, timestamped PDF ---
+company = "EngineMind"
+footer  = "Powered by ZARI — Confidential"
 
 report_data = latest.copy()
 report_data["Failure Probability"] = f"{prob*100:.1f}%"
-generate_pdf(report_data, "engine_report.pdf")
 
-with open("engine_report.pdf", "rb") as f:
-    b64 = base64.b64encode(f.read()).decode()
-    href = f'<a href="data:file/pdf;base64,{b64}" download="EngineReport.pdf">📄 Download Diagnostic Report</a>'
-    st.markdown(href, unsafe_allow_html=True)
+pdf_name = f"engine_report_{datetime.utcnow().strftime('%Y%m%d-%H%M%SZ')}.pdf"
+generate_pdf(report_data, pdf_name, company, footer)
+
+# Download button
+with open(pdf_name, "rb") as f:
+    pdf_bytes = f.read()
+
+st.download_button(
+    label="⬇️ Download Diagnostic Report",
+    data=pdf_bytes,
+    file_name=pdf_name,
+    mime="application/pdf",
+)
 import streamlit as st
 
 if st.secrets.get("password") and st.text_input("Password", type="password") != st.secrets["password"]:
