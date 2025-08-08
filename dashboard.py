@@ -94,16 +94,15 @@ prob = predict_failure(latest)
 st.metric("Failure Risk", f"{prob * 100:.1f} %")
 
 if prob > 0.8:
-
 if prob > 0.8:
-    st.error("⚠️ High Failure Risk! Immediate attention required.")
+    st.error("⚠ High Failure Risk! Immediate attention required.")
 elif prob > 0.5:
     st.warning("🟠 Moderate risk. Monitor closely.")
 else:
     st.success("✅ Engine appears stable.")
 
 company = "EngineMind"
-footer  = "Powered by ZARI — Confidential"
+footer = "Powered by ZARI – Confidential"
 
 report_data = latest.copy()
 report_data["Failure Probability"] = f"{prob*100:.1f}%"
@@ -120,4 +119,3 @@ st.download_button(
     file_name=pdf_name,
     mime="application/pdf",
 )
-
