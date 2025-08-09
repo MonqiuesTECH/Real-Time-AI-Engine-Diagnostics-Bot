@@ -31,6 +31,12 @@ def login_gate():
         else:
             st.error("Invalid credentials")
     st.stop() 
+if "play" not in st.session_state:
+    st.session_state.play = True
+
+st.sidebar.toggle("Play", key="play", value=st.session_state.play)
+if st.sidebar.button("Reset stream"):
+    st.session_state.stream_idx = window_size
 
 login_gate()
 
